@@ -104,14 +104,21 @@
     // Mobile Touch Controls
     let touchStartX = 0;
     let touchStartY = 0;
+    let longPressTimeout;
 
     document.addEventListener('touchstart', e => {
       const touch = e.changedTouches[0];
       touchStartX = touch.screenX;
       touchStartY = touch.screenY;
+
+      longPressTimeout = setTimeout(() => {
+        playerDrop();
+      }, 500); // Long press duration (ms)
     });
 
     document.addEventListener('touchend', e => {
+      clearTimeout(longPressTimeout);
+
       const touch = e.changedTouches[0];
       const dx = touch.screenX - touchStartX;
       const dy = touch.screenY - touchStartY;
