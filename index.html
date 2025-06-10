@@ -69,7 +69,7 @@
   <div class="controls">
     <button id="play-btn">Start</button>
     <button id="pause-btn">Pause</button>
-    <button id="drop-btn" onclick="playerDrop()">Drop</button>
+    <button id="drop-btn">Drop</button>
   </div>
   <h3 style="margin-bottom: 0px;">Next Piece</h3>
   <canvas id="next-piece" width="80" height="80"></canvas>
@@ -118,11 +118,17 @@
           bgMusic.play();
           update();
           document.getElementById('pause-btn').textContent = 'Pause';
+          document.getElementById("drop-btn").style.display = "block";
         } else {
           isPaused = true;
           bgMusic.pause();
           document.getElementById('pause-btn').textContent = 'Resume';
+          document.getElementById("drop-btn").style.display = "none";
         }
+      });
+
+      document.getElementById('drop-btn').addEventListener('click', () => {
+        playerDrop();
       });
 
       function update(time = 0) {
