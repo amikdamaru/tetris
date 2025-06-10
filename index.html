@@ -83,12 +83,25 @@
     const player = { pos: { x: 0, y: 0 }, matrix: null, score: 0 };
     let nextPiece = createPiece(randomPiece());
 
+    let dropCounter = 0;
+    let dropInterval = 1000;
+    let lastTime = 0;
+
+    function update(time = 0) {
+      const deltaTime = time - lastTime;
+      lastTime = time;
+      dropCounter += deltaTime;
+      if (dropCounter > dropInterval) playerDrop();
+      draw();
+      requestAnimationFrame(update);
+    }
+
     playerReset();
     updateScore();
     update();
     document.getElementById('bg-music').volume = 0.5;
 
-    // ====== Mobile Touch Controls ======
+    // Mobile Touch Controls
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -104,15 +117,21 @@
       const dy = touch.screenY - touchStartY;
 
       if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 30) playerMove(1);         // Swipe Right
-        else if (dx < -30) playerMove(-1);  // Swipe Left
+        if (dx > 30) playerMove(1);
+        else if (dx < -30) playerMove(-1);
       } else {
-        if (dy > 30) playerDrop();          // Swipe Down
-        else if (dy < -30) playerRotate(-1); // Swipe Up
+        if (dy > 30) playerDrop();
+        else if (dy < -30) playerRotate(-1);
       }
     });
 
-    // ====== Tetris Functions (copy-paste dari kode asli kamu) ======
+    document.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') playerMove(-1);
+      else if (event.key === 'ArrowRight') playerMove(1);
+      else if (event.key === 'ArrowDown') playerDrop();
+      else if (event.key === 'ArrowUp') playerRotate(-1);
+    });
+
     function createMatrix(w, h) {
       const matrix = [];
       while (h--) matrix.push(new Array(w).fill(0));
@@ -238,26 +257,6 @@
     function updateScore() {
       document.getElementById('score').textContent = 'Score: ' + player.score;
     }
-
-    let dropCounter = 0;
-    let dropInterval = 1000;
-    let lastTime = 0;
-
-    function update(time = 0) {
-      const deltaTime = time - lastTime;
-      lastTime = time;
-      dropCounter += deltaTime;
-      if (dropCounter > dropInterval) playerDrop();
-      draw();
-      requestAnimationFrame(update);
-    }
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'ArrowLeft') playerMove(-1);
-      else if (event.key === 'ArrowRight') playerMove(1);
-      else if (event.key === 'ArrowDown') playerDrop();
-      else if (event.key === 'ArrowUp') playerRotate(-1);
-    });
 
     function arenaSweep() {
       let rowCount = 1;
