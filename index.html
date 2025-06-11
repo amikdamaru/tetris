@@ -72,7 +72,20 @@
             font-size: 30px;
             text-align: center;
             display: none;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(247, 64, 64, 0.8);
+        }
+        #you-win {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            color: black;
+            padding: 20px 40px;
+            font-size: 30px;
+            text-align: center;
+            background-color: rgba(66, 247, 64, 1);
+            display: none;
         }
     </style>
 </head>
@@ -80,7 +93,11 @@
     <h1 style="margin-bottom: 0px;">Tetris Game</h1>
     <div id="game-over">
         GAME OVER
-        <br><b id="final-score" style="font-size: 15px;">Final Score : </b>
+        <br><b class="final" style="font-size: 15px;">Final Score : </b>
+    </div>
+    <div id="you-win">
+        YOU WIN
+        <br><b class="final" style="font-size: 15px;">Final Score : </b>
     </div>
     <div id="score">Score: 0</div>
     <canvas id="tetris" width="240" height="400"></canvas>
@@ -126,6 +143,7 @@
                 isPaused = false;
                 document.getElementById("play-btn").style.display = "none";
                 document.getElementById("game-over").style.display = "none";
+                document.getElementById("you-win").style.display = "none";
                 document.getElementById("pause-btn").style.display = "block";
                 document.getElementById("drop-btn").style.display = "block";
             });
@@ -135,9 +153,11 @@
                     isPaused = false;
                     bgMusic.play();
                     update();
+                    updateScore();
                     document.getElementById('pause-btn').textContent = 'Pause';
                     document.getElementById("drop-btn").style.display = "block";
                     document.getElementById("game-over").style.display = "none";
+                    document.getElementById("you-win").style.display = "none";
                 } else {
                     isPaused = true;
                     bgMusic.pause();
@@ -270,6 +290,11 @@
                     playerReset();
                     arenaSweep();
                     updateScore();
+
+                    //YOU WIN
+                    if(player.score > 499) {
+                        endGame('win');
+                    }
                 }
                 dropCounter = 0;
             }
@@ -288,17 +313,18 @@
                 
                 //GAME OVER
                 if (collide(arena, player)) {
-                    gameOver();
+                    endGame('lose');
                 }
             }
 
-            function gameOver() {
+            function endGame(state) {
                 arena.forEach(row => row.fill(0));
                 isPaused = true;
                 bgMusic.pause();
                 bgMusic.currentTime = 0;
                 updateFinalScore(player.score);
-                document.getElementById("game-over").style.display = "block";
+                if(state == 'lose') document.getElementById("game-over").style.display = "block";
+                if(state == 'win') document.getElementById("you-win").style.display = "block";
                 document.getElementById('pause-btn').textContent = 'Restart';
                 document.getElementById("drop-btn").style.display = "none";
                 player.score = 0;
@@ -339,7 +365,9 @@
             }
 
             function updateFinalScore(final_score) {
-                document.getElementById('final-score').textContent = 'Final Score: ' + final_score;
+                document.querySelectorAll(".final").forEach(el => {
+                    el.textContent = 'Final Score : ' + final_score;
+                });
             }
 
             function arenaSweep() {
