@@ -106,7 +106,7 @@
         <button id="pause-btn" style="display: none">Pause</button>
         <button id="drop-btn" style="display: none">Drop</button>
     </div>
-    <h3 style="margin-bottom: 0px;">Next Piece</h3>
+    <h3 style="margin-bottom: 0px;"><i id="change">Next</i> Piece</h3>
     <canvas id="next-piece" width="80" height="80"></canvas>
     <audio id="bg-music" src="audio.mp3" loop></audio>
 
@@ -166,6 +166,17 @@
                 }
             });
 
+            document.getElementById('change').addEventListener('click', () => {
+                if (!isPaused) change();
+            });
+
+            function change() {
+                console.log('change');
+                player.matrix = nextPiece;
+                nextPiece = createPiece(randomPiece());
+                drawNext();
+            }
+
             document.getElementById('drop-btn').addEventListener('click', () => {
                 playerDrop();
             });
@@ -216,6 +227,7 @@
                 else if (event.key === 'ArrowRight') playerMove(1);
                 else if (event.key === 'ArrowDown') playerDrop();
                 else if (event.key === 'ArrowUp') playerRotate(-1);
+                else if (event.code === 'ControlRight') change();
             });
 
             function createMatrix(w, h) {
