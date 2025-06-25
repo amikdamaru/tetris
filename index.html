@@ -316,13 +316,13 @@
                     updateScore();
 
                     //NEXT STAGE
-                    if(player.score >= 500*stage_count) {
+                    if(player.score >= 300*stage_count) {
                         //YOU WIN
                         if(stage_count == 3) {
                             endGame('win');
                         }
 
-                        stage_count++;
+                        if(stage_count < 3) stage_count++;
                         updateStage();
                     }
                 }
