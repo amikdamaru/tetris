@@ -317,13 +317,13 @@
 
                     //NEXT STAGE
                     if(player.score >= 300*stage_count) {
-                        //YOU WIN
-                        if(stage_count == 3) {
-                            endGame('win');
-                        }
-
                         if(stage_count < 3) stage_count++;
                         updateStage();
+
+                        //YOU WIN
+                        if(player.score >= 1000) {
+                            endGame('win');
+                        }
                     }
                 }
                 dropCounter = 0;
