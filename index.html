@@ -23,7 +23,12 @@
         }
 
         #score {
-            font-size: 20px;
+            font-size: 16px;
+            margin-top: 0px;
+        }
+
+        #stage {
+            font-size: 16px;
             margin-top: 0px;
         }
 
@@ -53,7 +58,11 @@
             }
 
             #score {
-                font-size: 16px;
+                font-size: 14px;
+            }
+
+            #stage {
+                font-size: 14px;
             }
 
             button {
@@ -99,7 +108,7 @@
         YOU WIN
         <br><b class="final" style="font-size: 15px;">Final Score : </b>
     </div>
-    <div id="score">Score: 0</div>
+    <div><b id="score">Score: 0</b> | <b id="stage">Stage: 1</b></div>
     <canvas id="tetris" width="240" height="400"></canvas>
     <div class="controls">
         <button id="play-btn">Start</button>
@@ -130,6 +139,8 @@
             let lastTime = 0;
             let isPaused = false;
             let isStarted = false;
+
+            let stage_count = 1;
 
             const bgMusic = document.getElementById('bg-music');
             bgMusic.volume = 0.5;
@@ -183,8 +194,9 @@
 
             function update(time = 0) {
                 if (isPaused) return;
-                const deltaTime = time - lastTime;
-                lastTime = time;
+                const stage_time = time * stage_count;
+                const deltaTime = stage_time - lastTime;
+                lastTime = stage_time;
                 dropCounter += deltaTime;
                 if (dropCounter > dropInterval) playerDrop();
                 draw();
@@ -303,9 +315,15 @@
                     arenaSweep();
                     updateScore();
 
-                    //YOU WIN
-                    if(player.score > 499) {
-                        endGame('win');
+                    //NEXT STAGE
+                    if(player.score >= 500*stage_count) {
+                        //YOU WIN
+                        if(stage_count == 3) {
+                            endGame('win');
+                        }
+
+                        stage_count++;
+                        updateStage();
                     }
                 }
                 dropCounter = 0;
@@ -339,6 +357,7 @@
                 if(state == 'win') document.getElementById("you-win").style.display = "block";
                 document.getElementById('pause-btn').textContent = 'Restart';
                 document.getElementById("drop-btn").style.display = "none";
+                stage_count = 1; 
                 player.score = 0;
             }
 
@@ -374,6 +393,10 @@
 
             function updateScore() {
                 document.getElementById('score').textContent = 'Score: ' + player.score;
+            }
+
+            function updateStage() {
+                document.getElementById('stage').textContent = 'Stage: ' + stage_count;
             }
 
             function updateFinalScore(final_score) {
