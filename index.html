@@ -270,7 +270,9 @@
             }
 
             function draw() {
-                context.fillStyle = '#000';
+                if(stage_count == 1) context.fillStyle = '#000';
+                else if(stage_count == 2) context.fillStyle = '#453200';
+                else if(stage_count == 3) context.fillStyle = '#856000';
                 context.fillRect(0, 0, canvas.width, canvas.height);
                 drawMatrix(arena, { x: 0, y: 0 });
                 drawMatrix(player.matrix, player.pos);
@@ -316,7 +318,7 @@
                     updateScore();
 
                     //NEXT STAGE
-                    if(player.score >= 300*stage_count) {
+                    if(player.score >= 20*stage_count) {
                         if(stage_count < 3) stage_count++;
                         updateStage();
 
